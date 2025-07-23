@@ -1,0 +1,18 @@
+/* Estilos generales */
+:root {
+  --primary-color: #b131fa; /* Púrpura eléctrico */
+  --secondary-color: #1c3aff; /* Azul brillante */
+  --dark-color: #4a0074; /* Púrpura oscuro */
+  --light-color: #e51cff; /* Rosa vibrante */
+  --danger-color: #ff1cc0; /* Reutilizamos rosa como 'peligro' */
+  --warning-color: #ff65da; /* Rosa claro (puedes ajustar si gustas) */
+  --info-color: #1c3aff; /* Azul brillante */
+  --shadow: 0 0.15rem 1.75rem 0 rgba(177, 49, 250, 0.25); /* sombra con tono púrpura */
+}
+
+body {
+  background-color: var(--light-color);
+  font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  color: #5a5c69;
+}
