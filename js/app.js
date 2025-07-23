@@ -284,3 +284,121 @@ async function agregarProducto() {
     if (!response.ok) {
       throw new Error(`Error HTTP: ${response.status}`);
     }
+
+    const nuevoProducto = await response.json();
+
+    console.log(`Respuesta POST ${endpoint}`);
+    console.log(`Status: ${response.status}`);
+    console.log(`Duración: ${duration.toFixed(2)}ms`);
+    console.log(`Datos recibidos:`, nuevoProducto);
+
+    logApiRequest("POST", endpoint, producto, {
+      status: response.status,
+      duration: duration,
+      response: nuevoProducto,
+    });
+
+    btn.innerHTML = '<i class="bi bi-check-circle"></i> ¡Guardado!';
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    document.getElementById("formAgregarProducto").reset();
+    const modal = bootstrap.Modal.getInstance(
+      document.getElementById("agregarProductoModal")
+    );
+    modal.hide();
+    await cargarProductos();
+
+    mostrarAlerta("Producto agregado correctamente", "success");
+  } catch (error) {
+    console.error("Error al agregar producto:", error);
+    btn.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Error';
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    mostrarAlerta("Error al agregar producto: " + error.message, "danger");
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
+}
+
+async function cargarProductoParaEditar(id) {
+  try {
+    const endpoint = `/productos/${id}`;
+    const url = `${API_BASE_URL}${endpoint}`;
+    const hora = new Date().toLocaleTimeString();
+
+    console.log(`GET ${endpoint}`);
+    console.log(`Hora: ${hora}`);
+    console.log(`Endpoint: ${url}`);
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const producto = await response.json();
+
+    console.log(`Respuesta GET ${endpoint}`);
+    console.log(`Status: ${response.status}`);
+    console.log(`Datos recibidos:`, producto);
+
+    document.getElementById("editId").value = producto.id;
+    document.getElementById("editNombre").value = producto.nombre;
+    document.getElementById("editDescripcion").value =
+      producto.descripcion || "";
+    document.getElementById("editPrecio").value = producto.precio || "";
+
+    const modal = new bootstrap.Modal(
+      document.getElementById("editarProductoModal")
+    );
+    modal.show();
+  } catch (error) {
+    console.error("Error al cargar producto:", error);
+    mostrarAlerta(
+      "Error al cargar producto para editar: " + error.message,
+      "danger"
+    );
+  }
+}
+
+async function actualizarProducto() {
+  const btn = document.getElementById("btnActualizarProducto");
+  const originalText = btn.innerHTML;
+
+  try {
+    btn.innerHTML =
+      '<span class="spinner-border spinner-border-sm"></span> Actualizando...';
+    btn.disabled = true;
+
+    const id = document.getElementById("editId").value;
+    const producto = {
+      nombre: document.getElementById("editNombre").value,
+      descripcion: document.getElementById("editDescripcion").value,
+      precio: parseFloat(document.getElementById("editPrecio").value),
+    };
+
+    if (!producto.nombre || isNaN(producto.precio)) {
+      throw new Error("Complete todos los campos correctamente");
+    }
+
+    const endpoint = `/productos/${id}`;
+    const url = `${API_BASE_URL}${endpoint}`;
+    const hora = new Date().toLocaleTimeString();
+
+    console.log(`PUT ${endpoint}`);
+    console.log(`Hora: ${hora}`);
+    console.log(`Endpoint: ${url}`);
+    console.log(`Datos enviados:`, producto);
+
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(producto),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error al actualizar");
+    }
