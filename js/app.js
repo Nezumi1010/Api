@@ -402,3 +402,109 @@ async function actualizarProducto() {
       const errorData = await response.json();
       throw new Error(errorData.message || "Error al actualizar");
     }
+
+    const productoActualizado = await response.json();
+
+    console.log(`Respuesta PUT ${endpoint}`);
+    console.log(`Status: ${response.status}`);
+    console.log(`Datos recibidos:`, productoActualizado);
+
+    const modal = bootstrap.Modal.getInstance(
+      document.getElementById("editarProductoModal")
+    );
+    modal.hide();
+
+    await cargarProductos();
+
+    mostrarAlerta("Producto actualizado correctamente", "success");
+  } catch (error) {
+    console.error("Error:", error);
+    mostrarAlerta(`Error: ${error.message}`, "danger");
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
+}
+
+async function eliminarProducto(id) {
+  if (!confirm("¿Estás seguro de eliminar este producto?")) return;
+
+  try {
+    const endpoint = `/productos/${id}`;
+    const url = `${API_BASE_URL}${endpoint}`;
+    const hora = new Date().toLocaleTimeString();
+
+    console.log(`DELETE ${endpoint}`);
+    console.log(`Hora: ${hora}`);
+    console.log(`Endpoint: ${url}`);
+
+    const startTime = performance.now();
+    const response = await fetch(url, {
+      method: "DELETE",
+    });
+    const duration = performance.now() - startTime;
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    console.log(`Respuesta DELETE ${endpoint}`);
+    console.log(`Status: ${response.status}`);
+    console.log(`Duración: ${duration.toFixed(2)}ms`);
+
+    logApiRequest("DELETE", endpoint, null, {
+      status: response.status,
+      duration: duration,
+    });
+
+    mostrarAlerta("Producto eliminado correctamente", "success");
+    await cargarProductos();
+  } catch (error) {
+    console.error("Error al eliminar producto:", error);
+    mostrarAlerta("Error al eliminar producto: " + error.message, "danger");
+  }
+}
+
+function mostrarAlerta(mensaje, tipo) {
+  const alertasExistente = document.querySelector(".alert-flotante");
+  if (alertasExistente) {
+    alertasExistente.remove();
+  }
+
+  const alerta = document.createElement("div");
+  alerta.className = `alert alert-${tipo} alert-dismissible fade show alert-flotante`;
+  alerta.setAttribute("role", "alert");
+  alerta.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+  alerta.style.position = "fixed";
+  alerta.style.top = "20px";
+  alerta.style.right = "20px";
+  alerta.style.zIndex = "9999";
+  alerta.style.minWidth = "300px";
+
+  document.body.appendChild(alerta);
+
+  setTimeout(() => {
+    if (alerta.parentNode) {
+      alerta.remove();
+    }
+  }, 5000);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  verificarEstadoAPI();
+  configurarDebugPanel();
+
+  if (document.getElementById("tablaProductos")) {
+    cargarProductos();
+    document
+      .getElementById("btnGuardarProducto")
+      .addEventListener("click", agregarProducto);
+    document
+      .getElementById("btnActualizarProducto")
+      .addEventListener("click", actualizarProducto);
+  }
+});
