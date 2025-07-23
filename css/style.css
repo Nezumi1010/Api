@@ -22,3 +22,25 @@ body {
   background-color: var(--dark-color) !important;
   padding: 0.8rem 1rem;
 }
+.navbar-brand {
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+}
+
+.navbar-brand,
+.nav-link {
+  color: rgb(255, 255, 255) !important;
+}
+
+.nav-link {
+  font-weight: 600;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.35rem;
+  margin: 0 0.2rem;
+  transition: all 0.3s;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
