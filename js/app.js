@@ -110,3 +110,177 @@ function logApiRequest(method, endpoint, data = null, meta = {}) {
             : ""
         }
     `;
+
+  requestsDiv.prepend(requestElement);
+
+  if (requestsDiv.children.length > 20) {
+    requestsDiv.removeChild(requestsDiv.lastChild);
+  }
+}
+
+function getMethodColor(method) {
+  const colors = {
+    GET: "primary",
+    POST: "success",
+    PUT: "warning",
+    DELETE: "danger",
+    PATCH: "info",
+  };
+  return colors[method] || "secondary";
+}
+
+async function cargarProductos() {
+  const tabla = document
+    .getElementById("tablaProductos")
+    ?.getElementsByTagName("tbody")[0];
+  if (!tabla) return;
+
+  tabla.innerHTML = `
+        <tr>
+            <td colspan="5" class="text-center py-4">
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="spinner-border text-primary me-3"></div>
+                    <span>Cargando productos desde la API...</span>
+                </div>
+            </td>
+        </tr>
+    `;
+
+  try {
+    const endpoint = "/productos";
+    const url = `${API_BASE_URL}${endpoint}`;
+    const hora = new Date().toLocaleTimeString();
+
+    console.log(`GET ${endpoint}`);
+    console.log(`Hora: ${hora}`);
+    console.log(`Endpoint: ${url}`);
+
+    const startTime = performance.now();
+    const response = await fetch(url);
+    const duration = performance.now() - startTime;
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    const productos = await response.json();
+
+    console.log(`Respuesta GET ${endpoint}`);
+    console.log(`Status: ${response.status}`);
+    console.log(`Duración: ${duration.toFixed(2)}ms`);
+    console.log(`Datos recibidos:`, productos);
+
+    logApiRequest("GET", endpoint, null, {
+      status: response.status,
+      duration: duration,
+    });
+
+    tabla.innerHTML = "";
+
+    if (productos.length === 0) {
+      tabla.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-3 text-muted">
+                        No hay productos registrados
+                    </td>
+                </tr>
+            `;
+      return;
+    }
+
+    productos.forEach((producto, index) => {
+      const fila = tabla.insertRow();
+      fila.style.animationDelay = `${index * 0.1}s`;
+      fila.innerHTML = `
+                <td>${producto.id}</td>
+                <td>${producto.nombre}</td>
+                <td>${
+                  producto.descripcion || '<span class="text-muted">N/A</span>'
+                }</td>
+                <td>$${
+                  producto.precio ? producto.precio.toFixed(2) : "0.00"
+                }</td>
+                <td>
+                    <button class="btn btn-sm btn-warning editar-producto me-2" data-id="${
+                      producto.id
+                    }">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </button>
+                    <button class="btn btn-sm btn-danger eliminar-producto" data-id="${
+                      producto.id
+                    }">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                </td>
+            `;
+    });
+
+    document.querySelectorAll(".editar-producto").forEach((btn) => {
+      btn.addEventListener("click", () =>
+        cargarProductoParaEditar(btn.dataset.id)
+      );
+    });
+
+    document.querySelectorAll(".eliminar-producto").forEach((btn) => {
+      btn.addEventListener("click", () => eliminarProducto(btn.dataset.id));
+    });
+  } catch (error) {
+    console.error("Error al cargar productos:", error);
+    tabla.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center py-3 text-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Error cargando productos
+                </td>
+            </tr>
+        `;
+    mostrarAlerta("Error al cargar productos: " + error.message, "danger");
+  }
+}
+
+async function agregarProducto() {
+  const btn = document.getElementById("btnGuardarProducto");
+  const originalText = btn.innerHTML;
+
+  const producto = {
+    nombre: document.getElementById("nombre").value,
+    descripcion: document.getElementById("descripcion").value,
+    precio: parseFloat(document.getElementById("precio").value),
+  };
+
+  if (!producto.nombre || isNaN(producto.precio)) {
+    mostrarAlerta(
+      "Por favor complete todos los campos correctamente",
+      "warning"
+    );
+    return;
+  }
+
+  try {
+    btn.innerHTML =
+      '<span class="spinner-border spinner-border-sm"></span> Guardando...';
+    btn.disabled = true;
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const endpoint = "/productos";
+    const url = `${API_BASE_URL}${endpoint}`;
+    const hora = new Date().toLocaleTimeString();
+
+    console.log(`POST ${endpoint}`);
+    console.log(`Hora: ${hora}`);
+    console.log(`Endpoint: ${url}`);
+    console.log(`Datos enviados:`, producto);
+
+    const startTime = performance.now();
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(producto),
+    });
+    const duration = performance.now() - startTime;
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
