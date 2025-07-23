@@ -16,3 +16,9 @@ body {
     "Helvetica Neue", Arial, sans-serif;
   color: #5a5c69;
 }
+/* Navbar personalizada */
+.navbar {
+  box-shadow: var(--shadow);
+  background-color: var(--dark-color) !important;
+  padding: 0.8rem 1rem;
+}
