@@ -142,3 +142,162 @@ body {
 .btn i {
   margin-right: 0.3rem;
 }
+
+/* Modales */
+.modal-content {
+  border-radius: 0.5rem;
+  border: none;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  border-bottom: 1px solid #e3e6f0;
+  padding: 1.25rem;
+}
+
+.modal-title {
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #e3e6f0;
+  padding: 1rem 1.5rem;
+}
+
+/* Formularios */
+.form-control,
+.form-select {
+  border-radius: 0.35rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d3e2;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--dark-color);
+  margin-bottom: 0.5rem;
+}
+
+/* Footer */
+footer {
+  margin-top: 3rem;
+  padding: 2rem 0;
+  background-color: var(--dark-color);
+  color: white;
+  box-shadow: 0 -0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+/* Jumbotron */
+.jumbotron {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);
+  color: white;
+  border-radius: 0.5rem;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.display-4 {
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.lead {
+  font-weight: 400;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* API Status Indicator */
+#api-status {
+  transition: all 0.3s ease;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 0.35rem;
+}
+
+#api-status-icon {
+  margin-right: 0.35rem;
+}
+
+.api-status-connected {
+  background-color: rgba(28, 200, 138, 0.2) !important;
+  color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+}
+
+.api-status-disconnected {
+  background-color: rgba(231, 74, 59, 0.2) !important;
+  color: var(--danger-color) !important;
+  border-color: var(--danger-color) !important;
+}
+
+/* Debug Panel */
+#api-debug-panel {
+  transition: all 0.3s ease;
+  max-width: 350px;
+}
+
+#api-debug-panel .card {
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.3);
+}
+
+#api-debug-panel .card-header {
+  background-color: var(--dark-color);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+}
+
+#api-requests div {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 0;
+  font-size: 0.8rem;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.table tbody tr {
+  animation: fadeIn 0.3s ease forwards;
+  opacity: 0;
+}
+
+.table tbody tr:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.table tbody tr:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.table tbody tr:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Spinners */
+.spinner-border {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-width: 0.2em;
+}
