@@ -44,3 +44,34 @@ body {
 .nav-link:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+.nav-link.active {
+  background-color: var(--primary-color);
+}
+
+/* Cards */
+.card {
+  margin-bottom: 1.5rem;
+  border: none;
+  border-radius: 0.35rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-header {
+  background-color: #f8f9fc;
+  border-bottom: 1px solid #e3e6f0;
+  padding: 1rem 1.35rem;
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1.5rem rgba(58, 59, 69, 0.2);
+}
+
